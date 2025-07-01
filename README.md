@@ -1,4 +1,4 @@
-# yt-dlp Web App
+# yt-dlp/Parabolic based Web App
 
 A simple web application to download video or audio from YouTube using `yt-dlp`, with optional reCAPTCHA protection.
 
