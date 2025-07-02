@@ -2,100 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YT Downloader</title>
-  <style>
-    body {
-      background-color: #121212;
-      color: #f0f0f0;
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      text-align: center;
-      background: #1e1e1e;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 0 1rem rgba(0,0,0,0.5);
-      width: 320px;
-    }
-    input, select, button {
-      margin-top: 1rem;
-      padding: 0.5rem;
-      width: 100%;
-      border-radius: 0.5rem;
-      border: none;
-      font-size: 1rem;
-    }
-    button {
-      background-color: #3b82f6;
-      color: white;
-      cursor: pointer;
-    }
-    #status {
-      margin-top: 1rem;
-      min-height: 1.2rem;
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>YT Downloader</h1>
-    <input type="text" id="url" placeholder="Enter YouTube URL" />
-    <select id="format">
-      <option value="best">Best quality</option>
-      <option value="bestaudio">Audio only</option>
-    </select>
-    <button id="downloadBtn">Download</button>
-    <div id="status"></div>
-  </div>
-  <script>
-    const downloadBtn = document.getElementById("downloadBtn");
-    const status = document.getElementById("status");
-
-    downloadBtn.addEventListener("click", async () => {
-      const url = document.getElementById("url").value.trim();
-      const format = document.getElementById("format").value;
-
-      if (!url) {
-        alert("Please enter a URL");
-        return;
-      }
-
-      status.textContent = "Downloading...";
-
-      try {
-        const response = await fetch("/api/download", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url, format })
-        });
-
-        if (!response.ok) {
-          const err = await response.json();
-          status.textContent = "Error: " + (err.detail || response.statusText);
-          return;
-        }
-
-        const blob = await response.blob();
-        const filename = response.headers.get("content-disposition")?.split("filename=")[1] || "video";
-
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = filename.replace(/["']/g, "");
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-
-        status.textContent = "Download complete!";
-      } catch (e) {
-        status.textContent = "Download failed: " + e.message;
-      }
-    });
-  </script>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
