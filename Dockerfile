@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 WORKDIR /app
-COPY backend/requirements.txt ./
+COPY backend/requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
 COPY backend/ /app/backend/
 COPY frontend/ /app/frontend/
