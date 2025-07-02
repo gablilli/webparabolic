@@ -1,13 +1,11 @@
 from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from backend.yt_downloader import download_video
 import os
 import uuid
-import shutil
-import uvicorn
 import requests
-import os
 
 app = FastAPI()
 
@@ -19,7 +17,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Optional CAPTCHA check (Google reCAPTCHA)
+app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
+
 RECAPTCHA_SECRET = os.getenv("RECAPTCHA_SECRET")
 
 @app.post("/api/download")
@@ -47,7 +46,6 @@ async def download(request: Request, background_tasks: BackgroundTasks):
     if not filename:
         raise HTTPException(status_code=500, detail="Download failed")
 
-    # Cleanup file after response is sent
     def cleanup():
         try:
             os.remove(filename)
@@ -56,7 +54,3 @@ async def download(request: Request, background_tasks: BackgroundTasks):
 
     background_tasks.add_task(cleanup)
     return FileResponse(filename, filename=os.path.basename(filename), media_type='application/octet-stream')
-
-@app.get("/")
-async def root():
-    return JSONResponse({"status": "ok"})
