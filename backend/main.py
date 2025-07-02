@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from yt_downloader import download_video
+from backend.yt_downloader import download_video
 import os
 import uuid
 import shutil
