@@ -1,15 +1,18 @@
 async function download() {
   const url = document.getElementById("url").value;
   const format = document.getElementById("format").value;
-  const token = grecaptcha.getResponse();
-  if (!url || !token) return alert("Please enter URL and complete CAPTCHA");
+
+  if (!url) {
+    alert("Please enter URL");
+    return;
+  }
 
   document.getElementById("status").innerText = "Downloading...";
 
   const res = await fetch("/api/download", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url, format, token })
+    body: JSON.stringify({ url, format }),
   });
 
   if (res.ok) {
@@ -22,5 +25,4 @@ async function download() {
   } else {
     document.getElementById("status").innerText = "Failed: " + res.statusText;
   }
-  grecaptcha.reset();
 }
