@@ -19,7 +19,7 @@ app.add_middleware(
 
 app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
 
-RECAPTCHA_SECRET = os.getenv("RECAPTCHA_SECRET")
+RECAPTCHA_SECRET = os.getenv("6Lf03HQrAAAAAJ_jSunX_V6VhNgormVRzVGjLKc8")
 
 @app.post("/api/download")
 async def download(request: Request, background_tasks: BackgroundTasks):
