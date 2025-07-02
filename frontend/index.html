@@ -1,143 +1,100 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>YT Downloader</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #121214;
-      color: #e1e1e6;
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: 20px;
+      height: 100vh;
+      margin: 0;
     }
     .container {
-      background: #1e1e20;
-      max-width: 480px;
-      width: 100%;
-      border-radius: 12px;
-      padding: 30px 40px;
-      box-shadow: 0 10px 30px rgb(0 0 0 / 0.4);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    h1 {
-      font-weight: 600;
-      font-size: 1.8rem;
-      margin: 0 0 10px;
-      color: #61dafb;
       text-align: center;
+      background: #1e1e1e;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 1rem rgba(0,0,0,0.5);
+      width: 320px;
     }
-    label {
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-      display: block;
-    }
-    input[type="text"], select {
-      background: #2c2c2f;
-      border: none;
-      border-radius: 8px;
-      padding: 12px 15px;
-      font-size: 1rem;
-      color: #e1e1e6;
+    input, select, button {
+      margin-top: 1rem;
+      padding: 0.5rem;
       width: 100%;
-      transition: background 0.3s ease;
-    }
-    input[type="text"]:focus, select:focus {
-      outline: none;
-      background: #404045;
+      border-radius: 0.5rem;
+      border: none;
+      font-size: 1rem;
     }
     button {
-      margin-top: 10px;
-      background: #61dafb;
-      border: none;
-      border-radius: 10px;
-      padding: 14px 0;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #121214;
+      background-color: #3b82f6;
+      color: white;
       cursor: pointer;
-      transition: background 0.3s ease;
-      box-shadow: 0 4px 14px rgb(97 218 251 / 0.5);
-    }
-    button:hover {
-      background: #4bb0e7;
     }
     #status {
-      min-height: 20px;
-      font-weight: 600;
-      font-size: 1rem;
-      text-align: center;
-      color: #7fffd4;
+      margin-top: 1rem;
+      min-height: 1.2rem;
     }
   </style>
 </head>
 <body>
-  <main class="container" role="main">
+  <div class="container">
     <h1>YT Downloader</h1>
-    <label for="url">YouTube URL</label>
-    <input id="url" type="text" placeholder="Paste your YouTube link here" autocomplete="off" />
-    <label for="format">Format</label>
-    <select id="format" aria-label="Select format">
-      <option value="best">Best Quality (video + audio)</option>
-      <option value="bestaudio">Audio Only</option>
+    <input type="text" id="url" placeholder="Enter YouTube URL" />
+    <select id="format">
+      <option value="best">Best quality</option>
+      <option value="bestaudio">Audio only</option>
     </select>
-    <button id="downloadBtn" type="button">Download</button>
-    <div id="status" aria-live="polite" role="alert"></div>
-  </main>
-
+    <button id="downloadBtn">Download</button>
+    <div id="status"></div>
+  </div>
   <script>
-    const btn = document.getElementById('downloadBtn');
-    const status = document.getElementById('status');
+    const downloadBtn = document.getElementById("downloadBtn");
+    const status = document.getElementById("status");
 
-    btn.addEventListener('click', async () => {
-      const url = document.getElementById('url').value.trim();
-      const format = document.getElementById('format').value;
-      status.textContent = '';
+    downloadBtn.addEventListener("click", async () => {
+      const url = document.getElementById("url").value.trim();
+      const format = document.getElementById("format").value;
+
       if (!url) {
-        status.textContent = 'Please enter a valid URL.';
+        alert("Please enter a URL");
         return;
       }
-      btn.disabled = true;
-      status.textContent = 'Processing download…';
+
+      status.textContent = "Downloading...";
 
       try {
-        const response = await fetch('/api/download', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch("/api/download", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url, format })
         });
+
         if (!response.ok) {
-          const errText = await response.text();
-          status.textContent = `Error: ${response.status} ${errText}`;
-          btn.disabled = false;
+          const err = await response.json();
+          status.textContent = "Error: " + (err.detail || response.statusText);
           return;
         }
+
         const blob = await response.blob();
-        const filename = response.headers.get('content-disposition')?.split('filename=')[1] || 'video.mp4';
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename.replace(/['"]/g, '');
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        status.textContent = 'Download completed!';
+        const filename = response.headers.get("content-disposition")?.split("filename=")[1] || "video";
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename.replace(/["']/g, "");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        status.textContent = "Download complete!";
       } catch (e) {
-        status.textContent = 'Unexpected error occurred.';
+        status.textContent = "Download failed: " + e.message;
       }
-      btn.disabled = false;
     });
   </script>
 </body>
