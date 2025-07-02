@@ -1,31 +1,20 @@
-# yt-dlp/Parabolic based Web App
+# "yt-dlp/Parabolic based" WebApp
 
-A simple web application to download video or audio from YouTube using `yt-dlp`, with optional reCAPTCHA protection.
+Simple web app to download YouTube videos or audio using yt-dlp.
 
-## 🛠 Tech Stack
-- FastAPI (backend)
-- Plain HTML/CSS (dark UI inspired by Parabolic)
-- yt-dlp for YouTube downloads
-- Google reCAPTCHA support (optional)
+## Features
 
-## 🚀 Quick Deploy
-1. Create a `.env` file with your `RECAPTCHA_SECRET`
-2. Push the project to GitHub
-3. Deploy on [Render](https://render.com) using `render.yaml`
+- FastAPI backend API
+- Modern Svelte frontend with cobalt.tools-like UI
+- No captcha (can be added)
+- Dockerized with multi-stage build
+- Ready for Render.com deployment
 
-## 🧪 API Usage
-POST `/api/download`
-```json
-{
-  "url": "https://youtube.com/watch?v=...",
-  "format": "best" | "bestaudio",
-  "token": "captcha-response"
-}
-```
+## Local development
 
-## 🔒 Security
-- CAPTCHA support helps block bots
-- Downloaded files are temporary and automatically removed
+### Backend
 
----
-MIT License
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
