@@ -15,6 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
+
 @app.post("/api/download")
 async def download(request: Request, background_tasks: BackgroundTasks):
     data = await request.json()
