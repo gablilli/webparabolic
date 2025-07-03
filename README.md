@@ -5,7 +5,7 @@ Simple web app to download YouTube videos or audio using yt-dlp.
 ## Features
 
 - FastAPI backend API
-- Modern Svelte frontend with cobalt.tools-like UI
+- Modern Svelte frontend
 - No captcha (can be added)
 - Dockerized with multi-stage build
 - Ready for Render.com deployment
