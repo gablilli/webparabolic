@@ -8,14 +8,16 @@ import uuid
 
 app = FastAPI()
 
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Puoi limitare ai tuoi domini
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Endpoint API
 @app.post("/api/download")
 async def download(request: Request, background_tasks: BackgroundTasks):
     data = await request.json()
@@ -39,4 +41,11 @@ async def download(request: Request, background_tasks: BackgroundTasks):
             pass
 
     background_tasks.add_task(cleanup)
-    return FileResponse(filename, filename=os.path.basename(filename), media_type='application/octet-stream')
+    return FileResponse(
+        filename,
+        filename=os.path.basename(filename),
+        media_type='application/octet-stream'
+    )
+
+# Serve frontend
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
